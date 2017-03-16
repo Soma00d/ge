@@ -30,6 +30,15 @@ if(isset($_GET["param5"])){$param5 = $_GET["param5"];}
 //Catalogue de fonction ///////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 
+//retourne les infos d'un tsui en fonction du part number
+$getTsui = function ($part_number, $connexion){
+    $resultats=$connexion->query("SELECT * FROM tsui WHERE part_number = '$part_number'");  
+    $resultats->execute();
+    $result = $resultats->fetchAll();
+
+    return json_encode($result);
+};
+
 //retourne un dictionnaire complet en fonction d'une family id
 $getDictionariesById = function ($id, $connexion){
     $resultats=$connexion->query("SELECT * FROM dictionaries WHERE family_id = $id");  
@@ -40,12 +49,17 @@ $getDictionariesById = function ($id, $connexion){
 };
 
 
-switch ($function) {
-    case "get_dictionaries_by_id":
-        echo $getDictionariesById($param1, $connexion);
-        break;    
-    default:
-        echo "no param";
+if(isset($_GET["function"])){
+    switch ($function) {
+        case "get_tsui":
+            echo $getTsui($param1, $connexion);
+            break;    
+        case "get_dictionaries_by_id":
+            echo $getDictionariesById($param1, $connexion);
+            break;    
+        default:
+            echo "no param";
+    }
 }
 
 

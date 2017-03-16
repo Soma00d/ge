@@ -9,7 +9,7 @@ $(document).ready(function(){
                 $(document).find("#content_"+link).addClass("active");
             },100);
         }
-    })
+    });
     
     //gestion du bouton retour page accueil
     $(".head_logo").on('click', function(){
@@ -17,5 +17,7 @@ $(document).ready(function(){
         setTimeout(function(){
             $(document).find("#content_home").addClass("active");
         },100);
-    })
+    });
+    
+    
 });

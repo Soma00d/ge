@@ -17,13 +17,13 @@
             <div id="content_login" class="page_content">
                 <?php include('template/login.html'); ?>
             </div>
-            <div id="content_home" class="page_content ">
+            <div id="content_home" class="page_content active">
                 <?php include('template/homepage.html'); ?>
             </div>
             <div id="content_hometest" class="page_content">
                 <?php include('template/hometest.html'); ?>
             </div>
-            <div id="content_pretest" class="page_content active">
+            <div id="content_pretest" class="page_content">
                 <?php include('template/pretest.html'); ?>
             </div>
             <div id="content_calibration" class="page_content">
@@ -37,8 +37,8 @@
         <div id="footer">
             <?php include('template/footer.html'); ?>
         </div>
-        
-        <script src="js/integration.js"></script>
+                
         <script src="js/function.js"></script>
+        <script src="js/integration.js"></script>
     </body>
 </html>
