@@ -1,0 +1,49 @@
+#content_calibration{
+    .bt_moins{
+        border: 1px solid black;
+        cursor: pointer;
+        width: 28px;
+        height: 25px;
+        text-align: center;
+        border-radius: 5px;
+        display: inline-block;
+        vertical-align: top;
+        margin: 5px;
+        padding-top: 3px;
+    }
+    .bt_plus{
+        border: 1px solid black;
+        cursor: pointer;
+        width: 28px;
+        height: 25px;
+        text-align: center;
+        border-radius: 5px;
+        display: inline-block;
+        vertical-align: top;
+        margin: 5px;
+        padding-top: 3px;
+    }
+    .jauge_container{
+        width: 250px;
+        height: 30px;
+        border: 1px solid black;
+    }
+    .jauge_remplissage{
+        width:0%;
+        height: 30px;
+        background:yellowgreen;
+    }
+    .informations{
+        width: 250px;
+        margin-bottom: 10px;
+        height: 15px;
+        margin-top: 15px;
+        .zero{
+            float:left;
+            
+        }
+        .cent{
+            float:right;
+        }
+    }
+}

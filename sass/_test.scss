@@ -1,0 +1,112 @@
+#content_hometest{
+    .bloc_test_container{
+        text-align:center;
+        margin-bottom:40px;
+        .test_bloc{
+            display:inline-block;
+            vertical-align:top;
+            width:45%;
+            margin:10px;
+            text-align:left;
+            font-size:20px;
+            line-height:1.6;
+            .photo_tsui{
+                width:100%;
+                height:auto;
+            }
+            .line{
+                cursor:pointer;
+                &:hover{
+                    color:#3b73b9;
+                }
+                img{
+                    width: 33px;
+                    margin-right: 12px;
+                    display: inline-block;
+                    vertical-align: middle;
+                    margin-bottom: 5px;
+                }
+            }
+        }
+    }
+    .menu_bouton{
+        text-align:center;
+        .bouton{
+            text-align:left;
+            width:350px;
+            display:inline-block;
+            vertical-align:top;
+            margin:5px;
+            margin-bottom: 56px;
+            height: 68px;
+        }
+    }
+    
+}
+
+#content_pretest{
+    margin-bottom: 50px;
+    .td_head{
+        background: #3b73b9;
+        color: white;
+        height: 30px;
+        border-radius: 5px 5px 0px 0px;
+        text-align: center;
+        padding-top: 10px;
+    }
+    .td{
+        width:13%;
+        display:inline-block;
+        vertical-align:top;
+        text-align:center;
+    }
+    .line{
+        border-bottom:1px solid grey;
+        height: 40px;
+        &.pressed{
+            .press{
+                background-color:greenyellow;
+            }
+        }
+        &.released{
+            .rel{
+                background-color:greenyellow;
+            }
+        }
+        .photo_piece{
+            img{
+                 width: 60px;
+                height: 40px;
+            }
+        }
+        .td{
+            padding-top:10px;
+            height: 30px;
+            &.photo_piece{
+                padding-top:0px;
+            }
+        }
+        
+    }
+    .result_array{
+        text-align:center;
+        margin-top:10px;
+    }
+    .bouton_grey{
+        width:120px;
+        display:inline-block;
+        vertical-align:top;
+        margin:5px;
+    }
+    .bt_container{
+        text-align:center;
+    }
+}
+
+#content_finaltest{
+    #testfinal_container{
+        .bouton_grey{
+            width: 140px;
+        }
+    }
+}
