@@ -8,6 +8,7 @@ $(document).ready(function(){
     var serialNumber = "";
     var family_id;
     var sequences = "";
+    var _MODE = "PRETEST";
     
     //recupération des infos tsui homepage
     $("#send_info_hp").on('click', function(){
@@ -60,25 +61,89 @@ $(document).ready(function(){
     
    
    //Traitement des données websocket 
-    ws.onmessage=function(event) {           
-        var message = JSON.parse(event.data);        
-        console.log(event.data);
-        var canId = message.canId;
-        var canData = message.canData;               
-        for (var nb = 0; nb < dictionary.length; nb++) {
-            if(dictionary[nb].can_id === canId){
-                switch(dictionary[nb].type){
-                    case "button":                        
-                        if(dictionary[nb].pressed_val_freq === canData){
-                            lineContainer.find(".line.id"+dictionary[nb].id).addClass("pressed");
+    ws.onmessage=function(event) {
+        switch(_MODE){
+            case "PRETEST":   
+                var message = JSON.parse(event.data);        
+                console.log(event.data);
+                var canId = message.canId;
+                var canData = message.canData; 
+                for (var nb = 0; nb < dictionary.length; nb++) {
+                    if(dictionary[nb].can_id === canId){
+                        switch(dictionary[nb].type){
+                            case "button":                        
+                                if(dictionary[nb].pressed_val_freq === canData){
+                                    lineContainer.find(".line.id"+dictionary[nb].id).addClass("pressed");
+                                }
+                                if(dictionary[nb].released_val_freq === canData){
+                                    lineContainer.find(".line.id"+dictionary[nb].id).addClass("released");
+                                }
+                                break;
+                            case "filter1":
+                                if(dictionary[nb].value === canData){
+                                    var jsonFilter = '{"type":"filter1", "canData":"'+canData+'", "canId":"'+canId+'", "timer":"'+dictionary[nb].timer+'"}';
+                                    ws.send(jsonFilter);
+                                }
+                                break;
+                            case "filter2":
+                                if(dictionary[nb].value === canData){
+                                    var jsonFilter = '{"type":"filter2", "canData":"'+canData+'", "canId":"'+canId+'", "timer":"'+dictionary[nb].timer+'"}';
+                                    ws.send(jsonFilter);
+                                }
+                                break;
+                            case "joystick":                        
+                                var joy1_horizontal = canData.substring(0,2);
+                                var joy1_vertical = canData.substring(2,4);
+                                var joy2_horizontal = canData.substring(4,6);
+                                var joy2_vertical = canData.substring(6,8);
+                                var joy3_horizontal = canData.substring(8,10);
+                                var joy3_vertical = canData.substring(10,12);
+                                
+                                if(joy1_vertical !== '00' || joy1_horizontal !== '00'){
+                                    $(".intitule span").html("JOYSTICK 1");
+                                    if(joy1_vertical !== '00'){
+                                        joy1_vertical = convertHexa(joy1_vertical);
+                                        if(joy1_vertical<0){
+                                            
+                                        }else if(joy1_vertical == 0){
+                                             
+                                        }else{
+                                            
+                                        }
+                                    }
+                                    else{joy1_horizontal = convertHexa(joy1_horizontal)}
+                                }
+                                
+                                if(joy2_vertical !== '00' || joy2_horizontal !== '00'){
+                                    $(".intitule span").html("JOYSTICK 2");
+                                    if(joy2_vertical !== '00'){joy2_vertical = convertHexa(joy2_vertical)}
+                                    else{joy2_horizontal = convertHexa(joy2_horizontal)}
+                                }
+                                
+                                if(joy3_vertical !== '00' || joy3_horizontal !== '00'){
+                                    $(".intitule span").html("JOYSTICK 3");
+                                    if(joy3_vertical !== '00'){joy3_vertical = convertHexa(joy3_vertical)}
+                                    else{joy3_horizontal = convertHexa(joy3_horizontal)}
+                                }
+                                
+                                break;
+                            default:
+                                console.log("non indentifié");
                         }
-                        if(dictionary[nb].released_val_freq === canData){
-                            lineContainer.find(".line.id"+dictionary[nb].id).addClass("released");
-                        }
+                    }
                 }
-            }
-        }
+                break;
+        }         
+        
     };
+    
+    function convertHexa(hexaVal){
+        var newval = parseInt(hexaVal, 16);
+        if(newval>0x80){
+           newval = newval-0x100; 
+        }
+        return newval;
+    }
     
     //différentes fonctions d'envoi de signaux au tsui
     $("#start_node").on('click', function(){startNode();});    
@@ -87,16 +152,25 @@ $(document).ready(function(){
     $("#stop_led").on('click', function(){stopLed();});
     
     function startNode() {
-        ws.send("002400806d68d7551407f09b861e3aad000549a84402000000000000012D000000000000");
+        var data = "002400806d68d7551407f09b861e3aad000549a84402000000000000012D000000000000";
+        var jsonData = '{"type":"signal", "msg":"'+data+'"}';
+        console.log(jsonData);
+        ws.send(jsonData);
     }
     function stopNode() {
-        ws.send("002400806d68d7551407f09b861e3aad000549a84402000000000000022D000000000000");
+        var data = "002400806d68d7551407f09b861e3aad000549a84402000000000000022D000000000000";
+        var jsonData = '{"type":"signal", "msg":"'+data+'"}';
+        ws.send(jsonData);
     }
     function startLed() {
-        ws.send("002400806d68d7551407f09b861e3aad000549a84408000000000328FFFFFFFFFFFFFFFF");
+        var data = "002400806d68d7551407f09b861e3aad000549a84408000000000328FFFFFFFFFFFFFFFF";
+        var jsonData = '{"type":"signal", "msg":"'+data+'"}';
+        ws.send(jsonData);
     }
     function stopLed() {
-        ws.send("002400806d68d7551407f09b861e3aad000549a844080000000003280000000000000000");
+        var data = "002400806d68d7551407f09b861e3aad000549a844080000000003280000000000000000";
+        var jsonData = '{"type":"signal", "msg":"'+data+'"}';
+        ws.send(jsonData);
     }
         
 });

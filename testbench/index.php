@@ -17,7 +17,7 @@
             <div id="content_login" class="page_content">
                 <?php include('template/login.html'); ?>
             </div>
-            <div id="content_home" class="page_content active">
+            <div id="content_home" class="page_content">
                 <?php include('template/homepage.html'); ?>
             </div>
             <div id="content_hometest" class="page_content">
@@ -26,7 +26,10 @@
             <div id="content_pretest" class="page_content">
                 <?php include('template/pretest.html'); ?>
             </div>
-            <div id="content_calibration" class="page_content">
+            <div id="content_finaltest" class="page_content ">
+                <?php include('template/finaltest.html'); ?>
+            </div>
+            <div id="content_calibration" class="page_content active">
                 <?php include('template/calibration.html'); ?>
             </div>
             <div id="content_print" class="page_content">
