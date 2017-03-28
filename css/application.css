@@ -295,29 +295,114 @@ and open the template in the editor.
   padding-top: 3px;
 }
 /* line 26, ../sass/_calibration.scss */
-#content_calibration .jauge_container {
-  width: 250px;
+#content_calibration .intitule {
+  font-weight: bold;
+  font-size: 30px;
+  text-align: center;
+}
+/* line 32, ../sass/_calibration.scss */
+#content_calibration .canvas_jauge {
+  position: relative;
+  width: 435px;
+  height: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* line 39, ../sass/_calibration.scss */
+#content_calibration .canvas_jauge #jauge_joystick_horizontal_left {
+  position: absolute;
+  left: 0px;
+  top: 201px;
+}
+/* line 43, ../sass/_calibration.scss */
+#content_calibration .canvas_jauge #jauge_joystick_horizontal_left .jauge_container {
+  width: 200px;
   height: 30px;
   border: 1px solid black;
+  background: yellowgreen;
+  box-shadow: -2px 0px 5px 0px grey;
 }
-/* line 31, ../sass/_calibration.scss */
-#content_calibration .jauge_remplissage {
+/* line 50, ../sass/_calibration.scss */
+#content_calibration .canvas_jauge #jauge_joystick_horizontal_left .jauge_remplissage {
+  width: 100%;
+  height: 30px;
+  background: white;
+}
+/* line 56, ../sass/_calibration.scss */
+#content_calibration .canvas_jauge #jauge_joystick_horizontal_right {
+  position: absolute;
+  left: 232px;
+  top: 201px;
+}
+/* line 60, ../sass/_calibration.scss */
+#content_calibration .canvas_jauge #jauge_joystick_horizontal_right .jauge_container {
+  width: 200px;
+  height: 30px;
+  border: 1px solid black;
+  background: white;
+  box-shadow: 2px 0px 5px 0px grey;
+}
+/* line 67, ../sass/_calibration.scss */
+#content_calibration .canvas_jauge #jauge_joystick_horizontal_right .jauge_remplissage {
   width: 0%;
   height: 30px;
   background: yellowgreen;
 }
-/* line 36, ../sass/_calibration.scss */
+/* line 73, ../sass/_calibration.scss */
+#content_calibration .canvas_jauge #jauge_joystick_vertical_top {
+  position: absolute;
+  left: 201px;
+}
+/* line 76, ../sass/_calibration.scss */
+#content_calibration .canvas_jauge #jauge_joystick_vertical_top .jauge_container {
+  height: 200px;
+  width: 30px;
+  border: 1px solid black;
+  background: yellowgreen;
+  box-shadow: 0px -2px 5px 0px grey;
+}
+/* line 83, ../sass/_calibration.scss */
+#content_calibration .canvas_jauge #jauge_joystick_vertical_top .jauge_remplissage {
+  height: 100%;
+  width: 30px;
+  background: white;
+}
+/* line 89, ../sass/_calibration.scss */
+#content_calibration .canvas_jauge #jauge_joystick_vertical_bot {
+  position: absolute;
+  left: 201px;
+  top: 272px;
+}
+/* line 93, ../sass/_calibration.scss */
+#content_calibration .canvas_jauge #jauge_joystick_vertical_bot .jauge_container {
+  height: 200px;
+  width: 30px;
+  border: 1px solid black;
+  background: white;
+  box-shadow: 0px 2px 5px 0px grey;
+}
+/* line 100, ../sass/_calibration.scss */
+#content_calibration .canvas_jauge #jauge_joystick_vertical_bot .jauge_remplissage {
+  height: 0%;
+  width: 30px;
+  background: yellowgreen;
+}
+/* line 105, ../sass/_calibration.scss */
+#content_calibration .canvas_jauge #jauge_joystick_vertical_bot .informations {
+  margin-top: 6px;
+}
+/* line 112, ../sass/_calibration.scss */
 #content_calibration .informations {
-  width: 250px;
+  width: 200px;
   margin-bottom: 10px;
   height: 15px;
   margin-top: 15px;
 }
-/* line 41, ../sass/_calibration.scss */
+/* line 117, ../sass/_calibration.scss */
 #content_calibration .informations .zero {
   float: left;
 }
-/* line 45, ../sass/_calibration.scss */
+/* line 121, ../sass/_calibration.scss */
 #content_calibration .informations .cent {
   float: right;
 }

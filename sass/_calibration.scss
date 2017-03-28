@@ -23,18 +23,94 @@
         margin: 5px;
         padding-top: 3px;
     }
-    .jauge_container{
-        width: 250px;
-        height: 30px;
-        border: 1px solid black;
+    .intitule{
+        font-weight: bold;
+        font-size: 30px;
+        text-align: center;
     }
-    .jauge_remplissage{
-        width:0%;
-        height: 30px;
-        background:yellowgreen;
+    
+    .canvas_jauge{
+        position: relative;
+        width: 435px;
+        height: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        
+        #jauge_joystick_horizontal_left{
+            position: absolute;
+            left: 0px;
+            top: 201px;
+            .jauge_container{
+                width: 200px;
+                height: 30px;
+                border: 1px solid black;
+                background:yellowgreen;
+                box-shadow: -2px 0px 5px 0px grey;
+            }
+            .jauge_remplissage{
+                width:100%;
+                height: 30px;
+                background:white;
+            }
+        }
+        #jauge_joystick_horizontal_right{
+            position: absolute;
+            left: 232px;
+            top: 201px;
+            .jauge_container{
+                width: 200px;
+                height: 30px;
+                border: 1px solid black;
+                background:white;
+                box-shadow: 2px 0px 5px 0px grey;
+            }
+            .jauge_remplissage{
+                width:0%;
+                height: 30px;
+                background:yellowgreen;
+            }
+        }
+        #jauge_joystick_vertical_top{
+            position: absolute;
+            left: 201px;
+            .jauge_container{
+                height: 200px;
+                width: 30px;
+                border: 1px solid black;
+                background:yellowgreen;
+                box-shadow: 0px -2px 5px 0px grey;
+            }
+            .jauge_remplissage{
+                height:100%;
+                width: 30px;
+                background:white;
+            }
+        }
+        #jauge_joystick_vertical_bot{
+            position: absolute;
+            left: 201px;
+            top:272px;
+            .jauge_container{
+                height: 200px;
+                width: 30px;
+                border: 1px solid black;
+                background:white;
+                box-shadow: 0px 2px 5px 0px grey;
+            }
+            .jauge_remplissage{
+                height:0%;
+                width: 30px;
+                background:yellowgreen;
+            }
+            .informations{
+                margin-top:6px;
+            }
+        }
     }
+    
+    
     .informations{
-        width: 250px;
+        width: 200px;
         margin-bottom: 10px;
         height: 15px;
         margin-top: 15px;

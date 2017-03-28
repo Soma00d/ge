@@ -80,26 +80,55 @@ $(document).ready(function(){
                                 }
                                 break;
                             case "filter1":
-                                console.log("on rentre dans case filter1");
                                 if(dictionary[nb].value === canData){
                                     var jsonFilter = '{"type":"filter1", "canData":"'+canData+'", "canId":"'+canId+'", "timer":"'+dictionary[nb].timer+'"}';
-                                    //console.log(jsonFilter);
                                     ws.send(jsonFilter);
                                 }
                                 break;
                             case "filter2":
-                                console.log("on rentre dans case filter2");
                                 if(dictionary[nb].value === canData){
                                     var jsonFilter = '{"type":"filter2", "canData":"'+canData+'", "canId":"'+canId+'", "timer":"'+dictionary[nb].timer+'"}';
-                                    //console.log(jsonFilter);
                                     ws.send(jsonFilter);
                                 }
                                 break;
                             case "joystick":                        
-                                //console.log("on rentre dans case joystick");
+                                var joy1_horizontal = canData.substring(0,2);
+                                var joy1_vertical = canData.substring(2,4);
+                                var joy2_horizontal = canData.substring(4,6);
+                                var joy2_vertical = canData.substring(6,8);
+                                var joy3_horizontal = canData.substring(8,10);
+                                var joy3_vertical = canData.substring(10,12);
+                                
+                                if(joy1_vertical !== '00' || joy1_horizontal !== '00'){
+                                    $(".intitule span").html("JOYSTICK 1");
+                                    if(joy1_vertical !== '00'){
+                                        joy1_vertical = convertHexa(joy1_vertical);
+                                        if(joy1_vertical<0){
+                                            
+                                        }else if(joy1_vertical == 0){
+                                             
+                                        }else{
+                                            
+                                        }
+                                    }
+                                    else{joy1_horizontal = convertHexa(joy1_horizontal)}
+                                }
+                                
+                                if(joy2_vertical !== '00' || joy2_horizontal !== '00'){
+                                    $(".intitule span").html("JOYSTICK 2");
+                                    if(joy2_vertical !== '00'){joy2_vertical = convertHexa(joy2_vertical)}
+                                    else{joy2_horizontal = convertHexa(joy2_horizontal)}
+                                }
+                                
+                                if(joy3_vertical !== '00' || joy3_horizontal !== '00'){
+                                    $(".intitule span").html("JOYSTICK 3");
+                                    if(joy3_vertical !== '00'){joy3_vertical = convertHexa(joy3_vertical)}
+                                    else{joy3_horizontal = convertHexa(joy3_horizontal)}
+                                }
+                                
                                 break;
                             default:
-                                console.log("nnon indentifié");
+                                console.log("non indentifié");
                         }
                     }
                 }
@@ -107,6 +136,14 @@ $(document).ready(function(){
         }         
         
     };
+    
+    function convertHexa(hexaVal){
+        var newval = parseInt(hexaVal, 16);
+        if(newval>0x80){
+           newval = newval-0x100; 
+        }
+        return newval;
+    }
     
     //différentes fonctions d'envoi de signaux au tsui
     $("#start_node").on('click', function(){startNode();});    
