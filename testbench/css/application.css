@@ -214,7 +214,7 @@ and open the template in the editor.
 }
 /* line 57, ../sass/_test.scss */
 #content_pretest .td {
-  width: 13%;
+  width: 12%;
   display: inline-block;
   vertical-align: top;
   text-align: center;
@@ -246,24 +246,55 @@ and open the template in the editor.
 #content_pretest .line .td.photo_piece {
   padding-top: 0px;
 }
-/* line 91, ../sass/_test.scss */
+/* line 88, ../sass/_test.scss */
+#content_pretest .line .td.test_bt {
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  background-color: orange;
+  border-radius: 7px;
+  height: 19px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  margin-top: 4px;
+}
+/* line 102, ../sass/_test.scss */
 #content_pretest .result_array {
   text-align: center;
   margin-top: 10px;
 }
-/* line 95, ../sass/_test.scss */
+/* line 106, ../sass/_test.scss */
 #content_pretest .bouton_grey {
   width: 120px;
   display: inline-block;
   vertical-align: top;
   margin: 5px;
 }
-/* line 101, ../sass/_test.scss */
+/* line 112, ../sass/_test.scss */
 #content_pretest .bt_container {
   text-align: center;
 }
+/* line 115, ../sass/_test.scss */
+#content_pretest .test_poppin {
+  position: absolute;
+  top: 986px;
+  left: 0;
+  right: 0;
+  width: 310px;
+  margin: auto;
+  background: #f2f2f2;
+  padding: 15px;
+  text-align: center;
+  border: 1px solid black;
+  box-shadow: 1px 1px 1px black;
+  border-radius: 5px;
+}
+/* line 116, ../sass/_test.scss */
+#content_pretest .test_poppin.hidden {
+  display: none;
+}
 
-/* line 108, ../sass/_test.scss */
+/* line 136, ../sass/_test.scss */
 #content_finaltest #testfinal_container .bouton_grey {
   width: 140px;
 }

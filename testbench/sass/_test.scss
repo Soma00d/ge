@@ -55,7 +55,7 @@
         padding-top: 10px;
     }
     .td{
-        width:13%;
+        width:12%;
         display:inline-block;
         vertical-align:top;
         text-align:center;
@@ -85,6 +85,17 @@
             &.photo_piece{
                 padding-top:0px;
             }
+            &.test_bt{
+                font-weight: bold;
+                color: white;
+                cursor: pointer;
+                background-color: orange;
+                border-radius: 7px;
+                height: 19px;
+                padding-top: 7px;
+                padding-bottom: 7px;
+                margin-top: 4px;
+            }
         }
         
     }
@@ -100,6 +111,23 @@
     }
     .bt_container{
         text-align:center;
+    }
+    .test_poppin{
+        &.hidden{
+            display:none;
+        }
+        position: absolute;
+        top: 986px;
+        left: 0;
+        right: 0;
+        width: 310px;
+        margin: auto;
+        background: #f2f2f2;
+        padding: 15px;
+        text-align: center;
+        border: 1px solid black;
+        box-shadow: 1px 1px 1px black;
+        border-radius: 5px;
     }
 }
 

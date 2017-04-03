@@ -41,7 +41,7 @@ $getTsui = function ($part_number, $connexion){
 
 //retourne un dictionnaire complet en fonction d'une family id
 $getDictionariesById = function ($id, $connexion){
-    $resultats=$connexion->query("SELECT * FROM dictionaries WHERE family_id = $id");  
+    $resultats=$connexion->query("SELECT * FROM dictionaries WHERE family_id = $id AND type != 'filter1' AND type != 'filter2'");  
     $resultats->execute();
     $result = $resultats->fetchAll();
 
