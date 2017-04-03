@@ -28,89 +28,148 @@ wss.on('connection', function (ws) {
 		console.log('CONNECTED: ' + sock.remoteAddress +':'+ sock.remotePort);
 		
 		sock.on("data", function(data) {
-			console.log(counter);
+			//console.log(counter);
 
 			var canStr = data.toString('hex');
 			
-			/*var length = canStr.substring(0, 4);
-			var msgType = canStr.substring(4, 8);
-			var tag = canStr.substring(8, 24);
-			var tsLow = canStr.substring(24, 32);
-			var tsLowConvert = parseInt(tsLow,16)/1000;
-			var tsHigh = canStr.substring(32, 40);
-			var channel = canStr.substring(40, 42);
-			
-			var flags = canStr.substring(44, 48);*/
-			var dlc = canStr.substring(42, 44);
-			var canId = canStr.substring(48, 56);
-			var canData = canStr.substring(56, 72);
-			
-			switch(dlc){
-				case '01':
-					canData = canData.substring(0,2);
-					break;
-				case '02':
-					canData = canData.substring(0,4);
-					break;
-				case '03':
-					canData = canData.substring(0,6);
-					break;
-				case '04':
-					canData = canData.substring(0,8);
-					break;
-				case '05':
-					canData = canData.substring(0,10);
-					break;
-				case '06':
-					canData = canData.substring(0,12);
-					break;
-				case '07':
-					canData = canData.substring(0,14);
-					break;
-				case '08':
-					canData = canData.substring(0,16);
-					break;
+			if(canStr.length >72){
+				sock.write('received "' + data + '"');
+				var nbFrame = canStr.length/72;
+				for(i=0;i<nbFrame;i++){
+					var mult = i*72;
+					var dlc = canStr.substring(42+mult, 44+mult);
+					var canId = canStr.substring(48+mult, 56+mult);
+					var canData = canStr.substring(56+mult, 72+mult);
+					
+					switch(dlc){
+						case '01':
+							canData = canData.substring(0,2);
+							break;
+						case '02':
+							canData = canData.substring(0,4);
+							break;
+						case '03':
+							canData = canData.substring(0,6);
+							break;
+						case '04':
+							canData = canData.substring(0,8);
+							break;
+						case '05':
+							canData = canData.substring(0,10);
+							break;
+						case '06':
+							canData = canData.substring(0,12);
+							break;
+						case '07':
+							canData = canData.substring(0,14);
+							break;
+						case '08':
+							canData = canData.substring(0,16);
+							break;
 
-				default:
-					return
-			}
-			
-
-			//var jsonData = '{"length":"'+length+'", "msgType":"'+msgType+'", "tag":"'+tag+'", "tsLow":"'+tsLowConvert+'", "tsHigh":"'+tsHigh+'", "channel":"'+channel+'", "dlc":"'+dlc+'", "flags":"'+flags+'", "canId":"'+canId+'", "canData":"'+canData+'"}';
-			var jsonData = '{"canId":"'+canId+'", "canData":"'+canData+'"}';
-			if(canId !== "000001ad" && canId !== "0000072d"){
-				console.log(jsonData);
-			}
-			
-			sock.write('received "' + data + '"');
-			
-			
-			if(filter1 !== "" || filter2 !== ""){
-				if(filter1 !== ""){
-					msgFilter1 = JSON.parse(filter1);
-					if(canId !== msgFilter1.canId && canData !== msgFilter1.canData){
-						if(filter2 !== ""){
+						default:
+							return
+					}
+					
+					var jsonData = '{"canId":"'+canId+'", "canData":"'+canData+'"}';
+					
+					if(filter1 !== "" || filter2 !== ""){
+						if(filter1 !== ""){
+							msgFilter1 = JSON.parse(filter1);
+							if(canId !== msgFilter1.canId && canData !== msgFilter1.canData){
+								if(filter2 !== ""){
+									msgFilter2 = JSON.parse(filter2);						
+									if(canId !== msgFilter2.canId && canData !== msgFilter2.canData){
+										console.log(canId + " filter2 can id : "+msgFilter2.canId + " // "+canData + "filter2 can data : "+msgFilter2.canData);
+										ws.send(jsonData);
+									}		
+								}else{
+									ws.send(jsonData);
+								}
+							}			
+						}else{
 							msgFilter2 = JSON.parse(filter2);						
 							if(canId !== msgFilter2.canId && canData !== msgFilter2.canData){
 								//console.log(canId + " filter2 can id : "+msgFilter2.canId + " // "+canData + "filter2 can data : "+msgFilter2.canData);
 								ws.send(jsonData);
-							}		
-						}else{
-							ws.send(jsonData);
+							}	
 						}
-					}			
-				}else{
-					msgFilter2 = JSON.parse(filter2);						
-					if(canId !== msgFilter2.canId && canData !== msgFilter2.canData){
-						//console.log(canId + " filter2 can id : "+msgFilter2.canId + " // "+canData + "filter2 can data : "+msgFilter2.canData);
+					}else{
 						ws.send(jsonData);
-					}	
+					}
+										
+					counter ++;
 				}
 			}else{
-				ws.send(jsonData);
-			}
+				//console.log("frame per packet : "+ (canStr.length/72));
+				var dlc = canStr.substring(42, 44);
+				var canId = canStr.substring(48, 56);
+				var canData = canStr.substring(56, 72);
+				
+				switch(dlc){
+					case '01':
+						canData = canData.substring(0,2);
+						break;
+					case '02':
+						canData = canData.substring(0,4);
+						break;
+					case '03':
+						canData = canData.substring(0,6);
+						break;
+					case '04':
+						canData = canData.substring(0,8);
+						break;
+					case '05':
+						canData = canData.substring(0,10);
+						break;
+					case '06':
+						canData = canData.substring(0,12);
+						break;
+					case '07':
+						canData = canData.substring(0,14);
+						break;
+					case '08':
+						canData = canData.substring(0,16);
+						break;
+
+					default:
+						return
+				}
+				
+
+				//var jsonData = '{"length":"'+length+'", "msgType":"'+msgType+'", "tag":"'+tag+'", "tsLow":"'+tsLowConvert+'", "tsHigh":"'+tsHigh+'", "channel":"'+channel+'", "dlc":"'+dlc+'", "flags":"'+flags+'", "canId":"'+canId+'", "canData":"'+canData+'"}';
+				var jsonData = '{"canId":"'+canId+'", "canData":"'+canData+'"}';
 								
-			counter ++;
+				sock.write('received "' + data + '"');
+				
+				
+				if(filter1 !== "" || filter2 !== ""){
+					if(filter1 !== ""){
+						msgFilter1 = JSON.parse(filter1);
+						if(canId !== msgFilter1.canId && canData !== msgFilter1.canData){
+							if(filter2 !== ""){
+								msgFilter2 = JSON.parse(filter2);						
+								if(canId !== msgFilter2.canId && canData !== msgFilter2.canData){
+									//console.log(canId + " filter2 can id : "+msgFilter2.canId + " // "+canData + "filter2 can data : "+msgFilter2.canData);
+									ws.send(jsonData);
+								}		
+							}else{
+								ws.send(jsonData);
+							}
+						}			
+					}else{
+						msgFilter2 = JSON.parse(filter2);						
+						if(canId !== msgFilter2.canId && canData !== msgFilter2.canData){
+							//console.log(canId + " filter2 can id : "+msgFilter2.canId + " // "+canData + "filter2 can data : "+msgFilter2.canData);
+							ws.send(jsonData);
+						}	
+					}
+				}else{
+					ws.send(jsonData);
+				}
+									
+				counter ++;
+			}
 		});
 		
 		sock.on('close', function(data) {
@@ -130,7 +189,7 @@ wss.on('connection', function (ws) {
 					},message.timer);
 				}
 			}
-			if(message.type == "filter2"){
+			/*if(message.type == "filter2"){
 				console.log("receive filter2");
 				if(filter2 == ""){
 					console.log("set_filter2");
@@ -139,7 +198,7 @@ wss.on('connection', function (ws) {
 						filter2 = "";
 					},message.timer);
 				}
-			}
+			}*/
 			if(message.type == "signal"){
 				var msgBuff = new Buffer(message.msg, 'hex');
 				
