@@ -68,13 +68,13 @@ $(document).ready(function(){
                             var signalStart = "002400806d68d7551407f09b861e3aad000549a844"+dlc+canId+press;
                             var signalStop = "002400806d68d7551407f09b861e3aad000549a844"+dlc+canId+release;
                             
-                            testPoppin.html("<div class='title'>"+description+"</div><div class='bt_test'><div class='bouton_grey start_bt'>Start</div><div class='bouton_grey stop_bt'>Stop</div></div><div class='result_test'>Did you see LED blinking ?</div><div class='bt_test_result'><div class='bouton_grey yes_bt'>YES</div><div class='bouton_grey no_bt'>NO</div></div>')");
+                            testPoppin.html("<div class='title'>"+description+"</div><div class='bt_test'><div class='bouton_grey start_bt'>Start</div><div class='bouton_grey stop_bt'>Stop</div></div><div class='result_test'>Did something happen as expected ?</div><div class='bt_test_result'><div class='bouton_grey yes_bt'>YES</div><div class='bouton_grey no_bt'>NO</div></div>");
                             
                             testPoppin.find(".title").html(description);        
                             testPoppin.removeClass("hidden");
 
                             testPoppin.find(".start_bt").on('click', function(){                       
-                                sendSignal(signalStart);
+                                sendSignal(signalStart);                                
                             });
                             testPoppin.find(".stop_bt").on('click', function(){                       
                                 sendSignal(signalStop);
@@ -230,7 +230,7 @@ $(document).ready(function(){
     $("#start_led").on('click', function(){sendSignal("002400806d68d7551407f09b861e3aad000549a84408000000000328FFFFFFFFFFFFFFFF");});
     $("#stop_led").on('click', function(){sendSignal("002400806d68d7551407f09b861e3aad000549a844080000000003280000000000000000");});
     
-    function sendSignal(signal){
+    function sendSignal(signal){        
         var jsonData = '{"type":"signal", "msg":"'+signal+'"}';
         console.log(jsonData);
         ws.send(jsonData);
