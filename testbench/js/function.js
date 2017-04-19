@@ -2,6 +2,7 @@ $(document).ready(function(){
     
     var ws = new WebSocket("ws://localhost:8100");  
     var dictionary = {};    
+    var jsonLog = [];    
     var lineContainer = $("#content_pretest .line_container");
     var testPoppin = $("#content_pretest .test_poppin");
     var canvasJauge = $(".canvas_jauge");
@@ -14,6 +15,7 @@ $(document).ready(function(){
     var serialNumber = "";
     var family_id;
     var sequences = "";
+    var familyName = "";
     var _MODE = "PRETEST";
     
     //recupération des infos tsui homepage
@@ -30,12 +32,12 @@ $(document).ready(function(){
                 if(data.length == 0){
                     alert("No result found with this part number.")
                 }else{
-                    var name = data[0].name;
+                    familyName = data[0].name;
                     var photo = data[0].photo_link;
                     sequences = data[0].linked_sequence;
                     family_id = data[0].family;                    
                     $(".photo_tsui").attr('src', 'images/'+photo);
-                    $(".title_bloc.name").html(name);                    
+                    $(".title_bloc.name").html(familyName);                    
                     $(".sso_user").html(userSSO);
                     $(".part_number").html(partNumber);
                     $(".serial_number").html(serialNumber);                    
@@ -52,9 +54,9 @@ $(document).ready(function(){
                         lineContainer.empty();
                         for (var iter = 0; iter < len; iter++) {
                             if(data[iter].type !== "led" && data[iter].type !== "buzzer"){
-                                lineContainer.append("<div class='line id"+data[iter].id+"' data-id='"+data[iter].id+"'><span class='td'>"+data[iter].id+"</span><span class='td'>"+data[iter].symbol_name+"</span><span class='td'>"+data[iter].type+"</span><span class='td'>"+data[iter].description+"</span><span class='td press'>"+data[iter].pressed_val_freq+"</span><span class='td rel'>"+data[iter].released_val_freq+"</span><span class='td photo_piece'><img src='images/"+data[iter].photo_link+"'></span><span class='td'>--</span></div>");
+                                lineContainer.append("<div class='line id"+data[iter].id+"' data-id='"+data[iter].id+"' data-name='"+data[iter].symbol_name+"' data-function='"+data[iter].type+"'><span class='td'>"+data[iter].id+"</span><span class='td'>"+data[iter].symbol_name+"</span><span class='td'>"+data[iter].type+"</span><span class='td'>"+data[iter].description+"</span><span class='td press'>"+data[iter].pressed_val_freq+"</span><span class='td rel'>"+data[iter].released_val_freq+"</span><span class='td photo_piece'><img src='images/"+data[iter].photo_link+"'></span><span class='td'>Not tested</span></div>");
                             }else{
-                                lineContainer.append("<div class='line id"+data[iter].id+"' data-id='"+data[iter].id+"'><span class='td'>"+data[iter].id+"</span><span class='td'>"+data[iter].symbol_name+"</span><span class='td'>"+data[iter].type+"</span><span class='td'>"+data[iter].description+"</span><span class='td press'>"+data[iter].pressed_val_freq+"</span><span class='td rel'>"+data[iter].released_val_freq+"</span><span class='td photo_piece'><img src='images/"+data[iter].photo_link+"'></span><span class='td test_bt' data-name='"+data[iter].description+"' data-press='"+data[iter].pressed_val_freq+"' data-release='"+data[iter].released_val_freq+"' data-canid='"+data[iter].can_id+"'>TEST</span></div>");
+                                lineContainer.append("<div class='line id"+data[iter].id+"' data-id='"+data[iter].id+"' data-name='"+data[iter].symbol_name+"' data-function='"+data[iter].type+"'><span class='td'>"+data[iter].id+"</span><span class='td'>"+data[iter].symbol_name+"</span><span class='td'>"+data[iter].type+"</span><span class='td'>"+data[iter].description+"</span><span class='td press'>"+data[iter].pressed_val_freq+"</span><span class='td rel'>"+data[iter].released_val_freq+"</span><span class='td photo_piece'><img src='images/"+data[iter].photo_link+"'></span><span class='td test_bt' data-name='"+data[iter].description+"' data-press='"+data[iter].pressed_val_freq+"' data-release='"+data[iter].released_val_freq+"' data-canid='"+data[iter].can_id+"'>TEST</span></div>");
                             }
                         }
                         //gestion des boutons de test des leds et buzzers
@@ -221,7 +223,95 @@ $(document).ready(function(){
         
     };
         
+    function generateJsonLog(){
+        jsonLog = [];
+        var name;
+        var fct;
+        var completeName;
+        $("#content_pretest .line_container .line").each(function(){
+            if($(this).hasClass("tested")){
+                name = $(this).data('name');
+                fct = $(this).data('fct');
+                if(fct == "button"){
+                    completeName = name+" - press"; 
+                    jsonLog.push({name:completeName, test:'', fct:fct});
+                    completeName = name+" - release"; 
+                    jsonLog.push({name:completeName, test:'', fct:fct});
+                }else{
+                    completeName = name+" - "+fct; 
+                    jsonLog.push({name:completeName, test:'', fct:fct});
+                }                 
+            }else{
+                name = $(this).data('name');
+                fct = $(this).data('function');
+                if(fct == "button"){
+                    completeName = name+" - press"; 
+                    jsonLog.push({name:completeName, test:'untested', fct:fct});
+                    completeName = name+" - release"; 
+                    jsonLog.push({name:completeName, test:'untested',fct:fct});
+                }else{
+                    completeName = name+" - "+fct; 
+                    jsonLog.push({name:completeName, test:'untested',fct:fct});
+                }                                
+            }
+        });
+        console.log(jsonLog);
+        console.log("------");
+        jsonLog = JSON.stringify(jsonLog);
+        console.log(jsonLog);
+        $.ajax({
+            type: "POST",
+            url: "php/api.php?function=save_log_pretest",
+            data: {jsonlog:jsonLog},
+            success: function (msg) {
+                alert("Your log have been saved.");
+                $("#print_log").removeClass("hidden");
+            }
+        });
+    }
     
+    function printJsonLog(jsonLog){  
+        var msg = JSON.parse(jsonLog);
+        var lineButton = "";
+        var lineLed = "";
+        var lineJoystick = "";
+        var lineBuzzer = "";
+        for(var i =0; i<msg.length; i++){
+            if(msg[i].fct == "button"){
+                if(msg[i].test == "untested"){
+                    var line = "<div><span style='width:100px;display:inline-block;'>"+msg[i].name+"</span> = <span style='color:orange'>"+msg[i].test+"</span></div>"                
+                }
+                lineButton += line;
+            }
+            if(msg[i].fct == "led"){
+                if(msg[i].test == "untested"){
+                    var line = "<div><span style='width:100px;display:inline-block;'>"+msg[i].name+"</span> = <span style='color:orange'>"+msg[i].test+"</span></div>"                
+                }
+                lineLed += line;
+            }
+            if(msg[i].fct == "buzzer"){
+                if(msg[i].test == "untested"){
+                    var line = "<div><span style='width:100px;display:inline-block;'>"+msg[i].name+"</span> = <span style='color:orange'>"+msg[i].test+"</span></div>"                
+                }
+                lineBuzzer += line;
+            }
+            if(msg[i].fct == "joystick"){
+                if(msg[i].test == "untested"){
+                    var line = "<div><span style='width:100px;display:inline-block;'>"+msg[i].name+"</span> = <span style='color:orange'>"+msg[i].test+"</span></div>"                
+                }
+                lineJoystick += line;
+            }
+            
+        }
+        var currentdate = new Date(); 
+        var datetime =  currentdate.getDate() + "/"+ (currentdate.getMonth()+1)  + "/" + currentdate.getFullYear() + " "+ currentdate.getHours() + "h" + currentdate.getMinutes();
+        var myWindow=window.open('','','width=1000,height=800');
+        myWindow.document.write("<h2>PRETEST LOG RECORD - "+datetime+"</h2><div style='border:1px solid black;padding:5px;'><b>Family</b> : "+familyName+" - <b>PN</b> : "+partNumber+" - <b>SN</b> : "+serialNumber+" - <b>Firmware version</b> : 2.0.3 - <b>User SSO</b> : "+userSSO+"</div><h3>BUTTONS</h3><div>"+lineButton+"</div><h3>BUZZERS</h3><div>"+lineBuzzer+"</div><h3>BACKLIGHTS</h3><div>"+lineLed+"</div>");
+        myWindow.document.close();
+        myWindow.focus();
+        myWindow.print();
+        myWindow.close();
+    }
     
     
     //différentes fonctions d'envoi de signaux au tsui
@@ -229,6 +319,8 @@ $(document).ready(function(){
     $("#stop_node").on('click', function(){sendSignal("002400806d68d7551407f09b861e3aad000549a84402000000000000022D000000000000");});
     $("#start_led").on('click', function(){sendSignal("002400806d68d7551407f09b861e3aad000549a84408000000000328FFFFFFFFFFFFFFFF");});
     $("#stop_led").on('click', function(){sendSignal("002400806d68d7551407f09b861e3aad000549a844080000000003280000000000000000");});
+    $("#record_log").on('click', function(){generateJsonLog();});
+    $("#print_log").on('click', function(){printJsonLog(jsonLog);});
     
     function sendSignal(signal){        
         var jsonData = '{"type":"signal", "msg":"'+signal+'"}';

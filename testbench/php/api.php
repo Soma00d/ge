@@ -14,7 +14,7 @@ $connexion = new PDO('mysql:host='.$VALEUR_hote.';port='.$VALEUR_port.';dbname='
 
 
 ///////////////////////////////////////////////////////////////////
-//Routeur des fonctions appelées en ajax via des param get en url//
+//Recuperation des variables GET pour traitement ultérieur/////////
 ///////////////////////////////////////////////////////////////////
 if(isset($_GET["function"])){$function = $_GET["function"];}
 if(isset($_GET["param1"])){$param1 = $_GET["param1"];}
@@ -22,8 +22,6 @@ if(isset($_GET["param2"])){$param2 = $_GET["param2"];}
 if(isset($_GET["param3"])){$param3 = $_GET["param3"];}
 if(isset($_GET["param4"])){$param4 = $_GET["param4"];}
 if(isset($_GET["param5"])){$param5 = $_GET["param5"];}
-
-
 
 
 ///////////////////////////////////////////////////////////////////
@@ -48,7 +46,31 @@ $getDictionariesById = function ($id, $connexion){
     return json_encode($result);
 };
 
-
+//enregistre les log d'un pretest
+$saveLogPretest = function ($connexion){
+    $jsonlog = $_POST['jsonlog'];
+    $user_sso = 'testuser';
+    $pn = 'testPN';
+    $serial = 'testSerial';
+    $role = 'repair';
+    $type = 'pretest';
+    
+    $stmt = $connexion->prepare("INSERT INTO global_log (json_log, part_number, serial_number, user_sso, role, type, date) VALUES (:jsonlog, :partnumber, :serialnumber, :user_sso, :role, :type, NOW())");
+    $stmt->bindParam(':jsonlog', $jsonlog);
+    $stmt->bindParam(':partnumber', $pn);
+    $stmt->bindParam(':serialnumber', $serial);
+    $stmt->bindParam(':user_sso', $user_sso);
+    $stmt->bindParam(':role', $role);
+    $stmt->bindParam(':type', $type);
+    
+    $stmt->execute();
+    
+    
+};
+ 
+///////////////////////////////////////////////////////////////////
+//Routeur des fonctions appelées en ajax via des param get en url//
+///////////////////////////////////////////////////////////////////
 if(isset($_GET["function"])){
     switch ($function) {
         case "get_tsui":
@@ -56,6 +78,9 @@ if(isset($_GET["function"])){
             break;    
         case "get_dictionaries_by_id":
             echo $getDictionariesById($param1, $connexion);
+            break;    
+        case "save_log_pretest":
+            $saveLogPretest($connexion);
             break;    
         default:
             echo "no param";
