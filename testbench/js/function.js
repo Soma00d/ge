@@ -54,9 +54,9 @@ $(document).ready(function(){
                         lineContainer.empty();
                         for (var iter = 0; iter < len; iter++) {
                             if(data[iter].type !== "led" && data[iter].type !== "buzzer"){
-                                lineContainer.append("<div class='line id"+data[iter].id+"' data-id='"+data[iter].id+"' data-name='"+data[iter].symbol_name+"' data-function='"+data[iter].type+"'><span class='td'>"+data[iter].id+"</span><span class='td'>"+data[iter].symbol_name+"</span><span class='td'>"+data[iter].type+"</span><span class='td'>"+data[iter].description+"</span><span class='td press'>"+data[iter].pressed_val_freq+"</span><span class='td rel'>"+data[iter].released_val_freq+"</span><span class='td photo_piece'><img src='images/"+data[iter].photo_link+"'></span><span class='td'>Not tested</span></div>");
+                                lineContainer.append("<div class='line id"+data[iter].id+"' data-id='"+data[iter].id+"' data-name='"+data[iter].symbol_name+"' data-function='"+data[iter].type+"'><span class='td'>"+data[iter].symbol_name+"</span><span class='td'>"+data[iter].type+"</span><span class='td'>"+data[iter].description+"</span><span class='td press'>"+data[iter].pressed_val_freq+"</span><span class='td rel'>"+data[iter].released_val_freq+"</span><span class='td photo_piece'><img src='images/"+data[iter].photo_link+"'></span><span class='td totest'>Not tested</span></div>");
                             }else{
-                                lineContainer.append("<div class='line id"+data[iter].id+"' data-id='"+data[iter].id+"' data-name='"+data[iter].symbol_name+"' data-function='"+data[iter].type+"'><span class='td'>"+data[iter].id+"</span><span class='td'>"+data[iter].symbol_name+"</span><span class='td'>"+data[iter].type+"</span><span class='td'>"+data[iter].description+"</span><span class='td press'>"+data[iter].pressed_val_freq+"</span><span class='td rel'>"+data[iter].released_val_freq+"</span><span class='td photo_piece'><img src='images/"+data[iter].photo_link+"'></span><span class='td test_bt' data-name='"+data[iter].description+"' data-press='"+data[iter].pressed_val_freq+"' data-release='"+data[iter].released_val_freq+"' data-canid='"+data[iter].can_id+"'>TEST</span></div>");
+                                lineContainer.append("<div class='line id"+data[iter].id+"' data-id='"+data[iter].id+"' data-name='"+data[iter].symbol_name+"' data-function='"+data[iter].type+"'><span class='td'>"+data[iter].symbol_name+"</span><span class='td'>"+data[iter].type+"</span><span class='td'>"+data[iter].description+"</span><span class='td press'>"+data[iter].pressed_val_freq+"</span><span class='td rel'>"+data[iter].released_val_freq+"</span><span class='td photo_piece'><img src='images/"+data[iter].photo_link+"'></span><span class='td test_bt' data-name='"+data[iter].description+"' data-press='"+data[iter].pressed_val_freq+"' data-release='"+data[iter].released_val_freq+"' data-canid='"+data[iter].can_id+"'>TEST</span></div>");
                             }
                         }
                         //gestion des boutons de test des leds et buzzers
@@ -66,7 +66,7 @@ $(document).ready(function(){
                             var press = $(this).data('press');
                             var release = $(this).data('release');
                             var canId = $(this).data('canid');        
-                            var dlc = "0"+(press.length/2)+"0000";
+                            var dlc = "0"+(press.toString().length/2)+"0000";
                             var signalStart = "002400806d68d7551407f09b861e3aad000549a844"+dlc+canId+press;
                             var signalStop = "002400806d68d7551407f09b861e3aad000549a844"+dlc+canId+release;
                             
@@ -86,13 +86,28 @@ $(document).ready(function(){
                                 testPoppin.addClass("hidden");
                                 _this.css('background-color','yellowgreen');
                                 _this.html('TEST OK');
+                                _this.parent().addClass("tested");
+                                _this.parent().addClass("testok");
                             });
                             testPoppin.find(".no_bt").on('click', function(){   
                                 testPoppin.empty();
                                 testPoppin.addClass("hidden");
                                 _this.css('background-color','red');
                                 _this.html('TEST FAIL');
+                                _this.parent().addClass("tested");
                             });
+                        });
+                        
+                        $(".totest").on('click',function(){
+                           if($(this).hasClass("tested")){
+                               $(this).html("Not tested");
+                               $(this).removeClass("tested");
+                               $(this).parent().removeClass("tested");
+                           }else{
+                               $(this).html("Tested");
+                               $(this).addClass("tested");
+                               $(this).parent().addClass("tested");
+                           }
                         });
                     }
                 });        
@@ -117,9 +132,15 @@ $(document).ready(function(){
                             case "button":                        
                                 if(dictionary[nb].pressed_val_freq === canData){
                                     lineContainer.find(".line.id"+dictionary[nb].id).addClass("pressed");
+                                    lineContainer.find(".line.id"+dictionary[nb].id).addClass("tested");                                       
+                                    lineContainer.find(".line.id"+dictionary[nb].id+" .totest").addClass("tested");
+                                    lineContainer.find(".line.id"+dictionary[nb].id+" .totest").html("Tested");
                                 }
                                 if(dictionary[nb].released_val_freq === canData){
-                                    lineContainer.find(".line.id"+dictionary[nb].id).addClass("released");
+                                    lineContainer.find(".line.id"+dictionary[nb].id).addClass("released"); 
+                                    lineContainer.find(".line.id"+dictionary[nb].id).addClass("tested");
+                                    lineContainer.find(".line.id"+dictionary[nb].id+" .totest").addClass("tested");
+                                    lineContainer.find(".line.id"+dictionary[nb].id+" .totest").html("Tested");
                                 }
                                 break;
                             case "filter1":
@@ -219,6 +240,11 @@ $(document).ready(function(){
                     }
                 }
                 break;
+            case "TEST":   
+                var message = JSON.parse(event.data);        
+                console.log(event.data);
+                var canId = message.canId;
+                var canData = message.canData; 
         }         
         
     };
@@ -231,15 +257,30 @@ $(document).ready(function(){
         $("#content_pretest .line_container .line").each(function(){
             if($(this).hasClass("tested")){
                 name = $(this).data('name');
-                fct = $(this).data('fct');
+                fct = $(this).data('function');
                 if(fct == "button"){
-                    completeName = name+" - press"; 
-                    jsonLog.push({name:completeName, test:'', fct:fct});
-                    completeName = name+" - release"; 
-                    jsonLog.push({name:completeName, test:'', fct:fct});
+                    if($(this).hasClass("pressed")){
+                        completeName = name+" - press"; 
+                        jsonLog.push({name:completeName, test:'OK', fct:fct});
+                    }else{
+                        completeName = name+" - press"; 
+                        jsonLog.push({name:completeName, test:'FAILED', fct:fct});
+                    }
+                    if($(this).hasClass("released")){
+                        completeName = name+" - release"; 
+                        jsonLog.push({name:completeName, test:'OK', fct:fct});
+                    }else{
+                        completeName = name+" - release"; 
+                        jsonLog.push({name:completeName, test:'FAILED', fct:fct});
+                    }                     
                 }else{
-                    completeName = name+" - "+fct; 
-                    jsonLog.push({name:completeName, test:'', fct:fct});
+                    if($(this).hasClass("testok")){
+                        completeName = name+" - "+fct; 
+                        jsonLog.push({name:completeName, test:'OK', fct:fct});
+                    }else{
+                        completeName = name+" - "+fct; 
+                        jsonLog.push({name:completeName, test:'FAILED', fct:fct});
+                    }
                 }                 
             }else{
                 name = $(this).data('name');
@@ -281,17 +322,36 @@ $(document).ready(function(){
                 if(msg[i].test == "untested"){
                     var line = "<div><span style='width:100px;display:inline-block;'>"+msg[i].name+"</span> = <span style='color:orange'>"+msg[i].test+"</span></div>"                
                 }
+                if(msg[i].test == "OK"){
+                    var line = "<div><span style='width:100px;display:inline-block;'>"+msg[i].name+"</span> = <span style='color:green'>"+msg[i].test+"</span></div>"                
+                }
+                if(msg[i].test == "FAILED"){
+                    var line = "<div><span style='width:100px;display:inline-block;'>"+msg[i].name+"</span> = <span style='color:red'>"+msg[i].test+"</span></div>"                
+                }
+                
                 lineButton += line;
             }
             if(msg[i].fct == "led"){
                 if(msg[i].test == "untested"){
                     var line = "<div><span style='width:100px;display:inline-block;'>"+msg[i].name+"</span> = <span style='color:orange'>"+msg[i].test+"</span></div>"                
                 }
+                if(msg[i].test == "OK"){
+                    var line = "<div><span style='width:100px;display:inline-block;'>"+msg[i].name+"</span> = <span style='color:green'>"+msg[i].test+"</span></div>"                
+                }
+                if(msg[i].test == "FAILED"){
+                    var line = "<div><span style='width:100px;display:inline-block;'>"+msg[i].name+"</span> = <span style='color:red'>"+msg[i].test+"</span></div>"                
+                }
                 lineLed += line;
             }
             if(msg[i].fct == "buzzer"){
                 if(msg[i].test == "untested"){
                     var line = "<div><span style='width:100px;display:inline-block;'>"+msg[i].name+"</span> = <span style='color:orange'>"+msg[i].test+"</span></div>"                
+                }
+                if(msg[i].test == "OK"){
+                    var line = "<div><span style='width:100px;display:inline-block;'>"+msg[i].name+"</span> = <span style='color:green'>"+msg[i].test+"</span></div>"                
+                }
+                if(msg[i].test == "FAILED"){
+                    var line = "<div><span style='width:100px;display:inline-block;'>"+msg[i].name+"</span> = <span style='color:red'>"+msg[i].test+"</span></div>"                
                 }
                 lineBuzzer += line;
             }

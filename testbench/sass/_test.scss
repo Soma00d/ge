@@ -55,7 +55,7 @@
         padding-top: 10px;
     }
     .td{
-        width:12%;
+        width:13.9%;
         display:inline-block;
         vertical-align:top;
         text-align:center;
@@ -95,6 +95,28 @@
                 padding-top: 7px;
                 padding-bottom: 7px;
                 margin-top: 4px;
+            }
+            &.totest{
+                border: 2px solid black;
+                padding: 0px;
+                border-radius: 5px;
+                margin-top: 4px;
+                padding-top: 4px;
+                padding-bottom: -10px;
+                height: 25px;
+                cursor: pointer;
+                color: black;
+            }
+            &.tested{
+                border: none;
+                padding: 0px;
+                border-radius: 5px;
+                margin-top: 4px;
+                padding-top: 4px;
+                padding-bottom: -10px;
+                height: 25px;
+                cursor: pointer;
+                color: black;
             }
         }
         

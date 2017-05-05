@@ -214,7 +214,7 @@ and open the template in the editor.
 }
 /* line 57, ../sass/_test.scss */
 #content_pretest .td {
-  width: 12%;
+  width: 13.9%;
   display: inline-block;
   vertical-align: top;
   text-align: center;
@@ -258,23 +258,47 @@ and open the template in the editor.
   padding-bottom: 7px;
   margin-top: 4px;
 }
-/* line 102, ../sass/_test.scss */
+/* line 99, ../sass/_test.scss */
+#content_pretest .line .td.totest {
+  border: 2px solid black;
+  padding: 0px;
+  border-radius: 5px;
+  margin-top: 4px;
+  padding-top: 4px;
+  padding-bottom: -10px;
+  height: 25px;
+  cursor: pointer;
+  color: black;
+}
+/* line 110, ../sass/_test.scss */
+#content_pretest .line .td.tested {
+  border: none;
+  padding: 0px;
+  border-radius: 5px;
+  margin-top: 4px;
+  padding-top: 4px;
+  padding-bottom: -10px;
+  height: 25px;
+  cursor: pointer;
+  color: black;
+}
+/* line 124, ../sass/_test.scss */
 #content_pretest .result_array {
   text-align: center;
   margin-top: 10px;
 }
-/* line 106, ../sass/_test.scss */
+/* line 128, ../sass/_test.scss */
 #content_pretest .bouton_grey {
   width: 120px;
   display: inline-block;
   vertical-align: top;
   margin: 5px;
 }
-/* line 112, ../sass/_test.scss */
+/* line 134, ../sass/_test.scss */
 #content_pretest .bt_container {
   text-align: center;
 }
-/* line 115, ../sass/_test.scss */
+/* line 137, ../sass/_test.scss */
 #content_pretest .test_poppin {
   position: absolute;
   top: 986px;
@@ -289,12 +313,12 @@ and open the template in the editor.
   box-shadow: 1px 1px 1px black;
   border-radius: 5px;
 }
-/* line 116, ../sass/_test.scss */
+/* line 138, ../sass/_test.scss */
 #content_pretest .test_poppin.hidden {
   display: none;
 }
 
-/* line 136, ../sass/_test.scss */
+/* line 158, ../sass/_test.scss */
 #content_finaltest #testfinal_container .bouton_grey {
   width: 140px;
 }
