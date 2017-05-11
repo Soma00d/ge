@@ -46,6 +46,15 @@ $getDictionariesById = function ($id, $connexion){
     return json_encode($result);
 };
 
+//retourne les elements du test final en fonction d'une family id
+$getFinalTest = function ($id, $connexion){
+    $resultats=$connexion->query("SELECT * FROM dictionaries WHERE family_id = $id AND is_final = '1'");  
+    $resultats->execute();
+    $result = $resultats->fetchAll();
+    
+    return json_encode($result);
+};
+
 //enregistre les log d'un pretest
 $saveLogPretest = function ($connexion){
     $jsonlog = $_POST['jsonlog'];
@@ -81,6 +90,9 @@ if(isset($_GET["function"])){
             break;    
         case "save_log_pretest":
             $saveLogPretest($connexion);
+            break;    
+        case "get_final_test":
+            echo $getFinalTest($param1, $connexion);
             break;    
         default:
             echo "no param";

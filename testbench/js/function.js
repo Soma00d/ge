@@ -1,8 +1,9 @@
 $(document).ready(function(){
     
     var ws = new WebSocket("ws://localhost:8100");  
-    var dictionary = {};    
-    var jsonLog = [];    
+    var dictionary = {};  
+    var jsonLog = [];
+    
     var lineContainer = $("#content_pretest .line_container");
     var testPoppin = $("#content_pretest .test_poppin");
     var canvasJauge = $(".canvas_jauge");
@@ -10,12 +11,26 @@ $(document).ready(function(){
     var joystickBot = $("#jauge_joystick_vertical_bot .jauge_remplissage");
     var joystickLeft = $("#jauge_joystick_horizontal_left .jauge_remplissage");
     var joystickRight = $("#jauge_joystick_horizontal_right .jauge_remplissage");
+    
+    var symbolNameFinal = $("#testfinal_container #symbol_name_t");
+    var descriptionFinal = $("#testfinal_container #description_t");
+    var imgFinal = $("#testfinal_container .img_t img");
+    var recapListFinal = $("#testfinal_container #recap_list_t");
+    var progressBarFinal = $("#testfinal_container #progress_bar_t .inside_bar");
+            
     var userSSO = "";
     var partNumber = "";
     var serialNumber = "";
     var family_id;
     var sequences = "";
     var familyName = "";
+    
+    var finalTestEntries = {}; 
+    var waitingAction;
+    var waitingValue;
+    var indexFinal;
+    var maxIndexFinal;
+    
     var _MODE = "PRETEST";
     
     //recupération des infos tsui homepage
@@ -117,6 +132,24 @@ $(document).ready(function(){
             alert("Some fields are missing");
         }        
     }); 
+    
+    $("#launch_final_test").on('click', function(){
+        indexFinal = 0;
+        _MODE = "TEST";
+        getFinalTest();
+        setTimeout(function(){
+            maxIndexFinal = finalTestEntries.length;
+            if(maxIndexFinal > 0){
+                $("#testfinal_container .display_test_content").removeClass("hidden");
+                $("#testfinal_container #launch_final_test").addClass("hidden");
+                displayFinalTest(indexFinal);
+            }            
+        },200);
+    });
+    $("#next_final_test").on('click', function(){
+        indexFinal++;
+        displayFinalTest(indexFinal);
+    });
    
    //Traitement des données websocket 
     ws.onmessage=function(event) {
@@ -245,10 +278,12 @@ $(document).ready(function(){
                 console.log(event.data);
                 var canId = message.canId;
                 var canData = message.canData; 
+                break;
         }         
         
     };
-        
+    
+    //Generation du tableau de log qui sera ensuite save en base de donnée
     function generateJsonLog(){
         jsonLog = [];
         var name;
@@ -309,8 +344,9 @@ $(document).ready(function(){
                 $("#print_log").removeClass("hidden");
             }
         });
-    }
+    };
     
+    //Generation du rapport de test et affichage de la fenetre d'impression 
     function printJsonLog(jsonLog){  
         var msg = JSON.parse(jsonLog);
         var lineButton = "";
@@ -371,7 +407,51 @@ $(document).ready(function(){
         myWindow.focus();
         myWindow.print();
         myWindow.close();
-    }
+    };
+    
+    //recuperation des entrées du test final dans le dictionnaire associé
+    function getFinalTest(){
+        $.ajax({
+                url : 'php/api.php?function=get_final_test&param1='+family_id,
+                type : 'GET',
+                dataType : 'JSON',
+                success: function(data, statut){
+                    finalTestEntries = data;
+                    
+                }
+            }
+        );
+    };
+    
+    //Affichage du test final en cours
+    function displayFinalTest(indexFinal){
+        var pourcentage = Math.round((indexFinal/maxIndexFinal)*100);
+        
+        var symbol_name = finalTestEntries[indexFinal].symbol_name;
+        var type = finalTestEntries[indexFinal].type;
+        var description = finalTestEntries[indexFinal].description;
+        var photo_link = finalTestEntries[indexFinal].photo_link;
+        
+        var value = finalTestEntries[indexFinal].value;
+        var can_id = finalTestEntries[indexFinal].can_id;
+        var pressed_val_freq = finalTestEntries[indexFinal].pressed_val_freq;
+        var pressed_val_tens = finalTestEntries[indexFinal].pressed_val_tens;
+        var released_val_freq = finalTestEntries[indexFinal].released_val_freq;
+        var released_val_tens = finalTestEntries[indexFinal].released_val_tens;
+        
+        switch(type){
+            case "button":
+                symbolNameFinal.html("Press and release "+symbol_name);
+                descriptionFinal.html(description);
+                imgFinal.attr('src', 'images/'+photo_link);
+                progressBarFinal.css('width',pourcentage+'%');
+                progressBarFinal.html(pourcentage+'%');
+                break;
+            case "joystick":
+                break;
+        }
+        
+    };
     
     
     //différentes fonctions d'envoi de signaux au tsui
